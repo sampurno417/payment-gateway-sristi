@@ -1,0 +1,129 @@
+/* Font face for custom font */
+@font-face {
+  font-family: "Blackpearl";
+  src: url("Blackpearl-vPxA.ttf") format("truetype");
+}
+* {
+  background-color: black;
+  color: rgb(226, 226, 202);
+  font-family: Arial, sans-serif;
+  
+}
+
+.title {
+  text-align: center;
+  color: red;
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  font-family: "Blackpearl", Arial, sans-serif;
+}
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: red;
+}
+
+#payment {
+  border-color: aliceblue;
+  border-width: 2px;
+  background-color: rgb(33, 38, 38);
+}
+
+.register-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-btn:hover{
+  background-color: #014289;
+}
+
+.label-items {
+  align-items: center;
+}
+
+.pay-now-btn {
+  display: block;
+  margin: 10px auto 20px;
+  text-align: center;
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.pay-now-btn:hover {
+  background-color: #218838;
+}
+
+.container{
+  display: flex;
+  justify-content: center; /* Horizontally center */
+  align-items: center; /* Vertically center */
+}
+.registration-form-container {
+  display: flex;
+  justify-content: center; /* Horizontally center */
+  align-items: center; /* Vertically center */
+  height:1300px;
+  width: 600px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  /* height: 100vh;            Take up full viewport height */
+}
+
+.registration-form {
+  width: 100%; 
+  max-width: 500px; 
+  padding: 20px; 
+  box-sizing: border-box; 
+  
+  
+}
+.show-on-desktop {
+  display: block; /* Ensure it’s visible by default */ 
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.qr-img{
+  height:200px;
+  width: 200px;
+  
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .show-on-desktop {
+    display: none; /* Hide it on mobile */
+  }
+}
+.hide-on-desktop {
+  display: none; /* Hide by default (for desktop) */
+  
+}
+
+@media (max-width: 768px) {
+  .hide-on-desktop {
+    display: block; /* Show on mobile */
+  }
+}

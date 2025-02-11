@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Confirmed</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Poppins:wght@300;400;700&display=swap');
+        
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            border: 8px solid #ff0000;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px #ff0000;
+            background: color #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .coming-soon {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff4500;
+            animation: blink 1s infinite alternate;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-family: 'Pirata One', cursive;
+            margin-bottom: 25px;
+        }
+        h1 {
+            font-size: 2rem;
+            color: #ffffff;
+        }
+        p {
+            font-size: 1.2rem;
+            color: #d3d3d3;
+        }
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.6; }
+        }
+    </style>
+     <script>
+        if (performance.navigation.type === 1) {
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <p class="coming-soon">Website Coming Soon...</p>
+        <h1>Registration Confirmed!</h1>
+        <p>Thank you for registering. Stay tuned for updates.</p>
+    </div>
+</body>
+</html>

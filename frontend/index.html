@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Sristi 2025 Tech Fest Registration</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const eventSelect = document.getElementById("event");
+        const eventContainer = document.getElementById("event-container");
+        const note = document.querySelector(".note");
+        const payNowContainer = document.getElementById("pay-now-container");
+        const collegeSelect = document.getElementById("college");
+        const collegeInputContainer = document.getElementById(
+          "college-input-container"
+        );
+        const qrPayment = document.getElementById("qr-payment");
+
+        collegeSelect.addEventListener("change", function () {
+          if (collegeSelect.value === "other") {
+            collegeInputContainer.style.display = "block";
+            eventContainer.style.display = "none";
+            eventSelect.removeAttribute("required");
+            note.textContent = "Participation Fee: ₹800";
+            payNowContainer.innerHTML =
+              '<a href="upi://pay?pa=sristijgec@sbi&pn=SRISTIJALPAIGURI%20GOVT%20ENGG%20COLLEGE&mc=8220&tr=&tn=&am=800&cu=INR&url=&mode=02&purpose=00&orgid=180102&sign=MEQCIBpUcu1IGX07X7+IPlV6AYfA43SSwUaV/VV+19w2cIRNAiA0qD2s6BqIza4HZhd9M2SPsSdCp8ShUlbDql6V7SviQQ==" class="pay-now-btn">PAY NOW</a>';
+            qrPayment.innerHTML =
+              '<img src="./assets/pay-800-sristi.svg" class="qr-img"/>';
+          } else {
+            collegeInputContainer.style.display = "none";
+            eventContainer.style.display = "block";
+            eventSelect.setAttribute("required", "required");
+            note.textContent =
+              "Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800";
+            payNowContainer.innerHTML = "";
+            qrPayment.innerHTML = "";
+
+            eventSelect.addEventListener("change", function () {
+              if (eventSelect.value === "both") {
+                note.textContent = "Participation Fee: ₹800";
+                payNowContainer.innerHTML =
+                  '<a href="upi://pay?pa=sristijgec@sbi&pn=SRISTIJALPAIGURI%20GOVT%20ENGG%20COLLEGE&mc=8220&tr=&tn=&am=800&cu=INR&url=&mode=02&purpose=00&orgid=180102&sign=MEQCIBpUcu1IGX07X7+IPlV6AYfA43SSwUaV/VV+19w2cIRNAiA0qD2s6BqIza4HZhd9M2SPsSdCp8ShUlbDql6V7SviQQ==" class="pay-now-btn">PAY NOW</a>';
+                qrPayment.innerHTML =
+                  '<img src="./assets/pay-800-sristi.svg" class="qr-img"/>';
+              } else if (
+                eventSelect.value === "event1" ||
+                eventSelect.value === "event2"
+              ) {
+                note.textContent = "Participation Fee: ₹500";
+                payNowContainer.innerHTML =
+                  '<a href="upi://pay?pa=sristijgec@sbi&pn=SRISTIJALPAIGURI%20GOVT%20ENGG%20COLLEGE&mc=8220&tr=&tn=&am=500&cu=INR&url=&mode=02&purpose=00&orgid=180102&sign=MEQCIBpUcu1IGX07X7+IPlV6AYfA43SSwUaV/VV+19w2cIRNAiA0qD2s6BqIza4HZhd9M2SPsSdCp8ShUlbDql6V7SviQQ==" class="pay-now-btn">PAY NOW</a>';
+                qrPayment.innerHTML =
+                  '<img src="./assets/pay-500-sristi.svg" class="qr-img"/>';
+              } else {
+                note.textContent =
+                  "Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800";
+                payNowContainer.innerHTML = "";
+                qrPayment.innerHTML = "";
+              }
+            });
+          }
+        });
+
+        const loadingAnimation = lottie.loadAnimation({
+          container: document.getElementById("loading-animation"),
+          path: "Main Scene.json", // Update with your local Lottie file path
+          renderer: "svg",
+          loop: true,
+          autoplay: false,
+        });
+
+        loadingAnimation.addEventListener("error", function (error) {
+          console.error("Lottie animation error:", error);
+        });
+
+        document
+          .getElementById("registrationForm")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const paymentInput = document.getElementById("payment").files[0];
+            const formData = {
+              name: document.getElementById("name").value,
+              roll: parseInt(document.getElementById("roll").value),
+              college: document.getElementById("college").value,
+              dept: document.getElementById("dept").value,
+              year: document.getElementById("year").value,
+              phone: parseInt(document.getElementById("phone").value),
+              email: document.getElementById("email").value,
+              // event: document.getElementById("event").value,
+              isVerified: false,
+            };
+
+            formData.event =
+              document.getElementById("event").value === ""
+                ? "selected"
+                : document.getElementById("event").value;
+
+            formData.amount =
+              document.getElementById("event").value === "both" ||
+              document.getElementById("college").value !== "jgec"
+                ? 800
+                : 500;
+
+            formData.collegeName =
+              document.getElementById("college").value === "jgec"
+                ? "Jalpaiguri Government Engineering College"
+                : document.getElementById("otherCollege").value;
+
+            // Show loading animation
+            document.getElementById("loading-overlay").style.display = "flex";
+            loadingAnimation.play();
+
+            try {
+        const response = await fetch("http://localhost:4000/payment/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: formData.amount }),
+        });
+
+        const paymentData = await response.json();
+        if (!response.ok) {
+          throw new Error("Failed to initiate payment");
+        }
+
+        const options = {
+          key: "rzp_test_mEtMCuqx6MkbMi",
+          amount: paymentData.amount,
+          currency: "INR",
+          name: "Sristi 2025",
+          description: "Event Registration Fee",
+          order_id: paymentData.orderId,
+          handler: async function (response) {
+            formData.paymentId = response.razorpay_payment_id;
+            formData.orderId = response.razorpay_order_id;
+            formData.signature = response.razorpay_signature;
+
+            const verifyResponse = await fetch("http://localhost:4000/payment/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            });
+
+            const verifyData = await verifyResponse.json();
+            if (verifyResponse.ok) {
+              const mailResponse = await fetch(`http://localhost:4000/sendmail/${formData.email}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: verifyData.id }),
+              });
+
+              if (mailResponse.ok) {
+                alert("Registration successful!");
+                resetFormFields();
+                window.location.href = "confirmation.html";
+              } else {
+                alert("Failed to send confirmation email.");
+              }
+            } else {
+              alert("Payment verification failed.");
+            }
+          },
+          prefill: {
+            name: formData.name,
+            email: formData.email,
+            contact: formData.phone,
+          },
+          theme: { color: "#3399cc" },
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+      }
+      });
+
+
+        function resetFormFields() {
+          window.location.href = "confirmation.html";
+          document.getElementById("registrationForm").reset();
+          document.getElementById("college-input-container").style.display =
+            "none";
+          document.getElementById("event-container").style.display = "block";
+          document.querySelector(".note").textContent =
+            "Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800";
+          document.getElementById("pay-now-container").innerHTML = "";
+          document.getElementById("fileName").textContent = "";
+          setTimeout(function() {
+        window.location.href = "confirmation.html";
+    }, 1000);
+        }
+
+      //   async function uploadToCloudinary(file) {
+      //     const formData = new FormData();
+      //     formData.append("file", file);
+      //     formData.append("upload_preset", "payment_proof");
+      //     formData.append("cloud_name", "ddtatnwwv");
+
+      //     const response = await fetch(
+      //       "https://api.cloudinary.com/v1_1/ddtatnwwv/image/upload",
+      //       {
+      //         method: "POST",
+      //         body: formData,
+      //       }
+      //     );
+      //     if (response.status == 400){
+      //       alert("Faild to upload image");
+      //       throw new Error("Failed to upload image");
+      //     }
+
+      //     return await response.json();
+      //   }
+       });
+    </script>
+
+    <style>
+      #loading-overlay {
+        display: none; /* Initially hidden */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+        z-index: 9999; /* Ensure it's on top */
+        justify-content: center;
+        align-items: center;
+      }
+
+      #loading-animation {
+        background: transparent;
+        width: 200px;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading-overlay">
+      <div id="loading-animation"></div>
+    </div>
+
+    <div class="container">
+      <div class="registration-form-container">
+        <form class="registration-form" id="registrationForm">
+          <h1 class="title">Sristi 2025 Registration</h1>
+
+          <div class="label-item">
+            <label for="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter your full name"
+              required
+            />
+          </div>
+
+          <div class="label-item">
+            <label for="college">College Name</label>
+            <select id="college" name="college" required>
+              <option value="">-- Select your college --</option>
+              <option value="jgec">
+                Jalpaiguri Government Engineering College
+              </option>
+              <option value="other">Others</option>
+            </select>
+          </div>
+
+          <div
+            id="college-input-container"
+            class="label-item"
+            style="display: none"
+          >
+            <label for="otherCollege">Enter College Name</label>
+            <input
+              type="text"
+              id="otherCollege"
+              name="otherCollege"
+              placeholder="Enter your college name"
+            />
+          </div>
+
+          <div class="label-item">
+            <label for="roll">Roll Number</label>
+            <input
+              type="number"
+              id="roll"
+              name="roll"
+              placeholder="Enter your roll number"
+              required
+            />
+          </div>
+
+          <div class="label-item">
+            <label for="dept">Department</label>
+            <select id="dept" name="dept" required>
+              <option value="">-- Select your department --</option>
+              <option value="civil">Civil Engineering</option>
+              <option value="mechanical">Mechanical Engineering</option>
+              <option value="electrical">Electrical Engineering</option>
+              <option value="ece">Electronics and Communication</option>
+              <option value="cse">Computer Science</option>
+              <option value="it">Information Technology</option>
+              <option value="other">Others</option>
+            </select>
+          </div>
+
+          <div class="label-item">
+            <label for="year">Year</label>
+            <select id="year" name="year" required>
+              <option value="">-- Choose your year --</option>
+              <option value="1st">1st Year</option>
+              <option value="2nd">2nd Year</option>
+              <option value="3rd">3rd Year</option>
+              <option value="4th">4th Year</option>
+            </select>
+          </div>
+
+          <div class="label-item">
+            <label for="phone">Phone Number</label>
+            <input
+              type="tel"
+              pattern="^\d{10}$"
+              id="phone"
+              name="phone"
+              placeholder="Enter your phone number"
+              required
+            />
+          </div>
+
+          <div class="label-item">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div id="event-container" class="label-item">
+            <label for="event">Select Event</label>
+            <select id="event" name="event" required>
+              <option value="">-- Choose an event --</option>
+              <option value="event1">Event 1</option>
+              <option value="event2">Event 2</option>
+              <option value="both">Both (1+2)</option>
+            </select>
+          </div>
+
+          <p class="note">
+            Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800
+          </p>
+          <div class="show-on-desktop">
+            <div id="qr-payment"></div>
+          </div>
+
+          <div id="pay-now-container" class="hide-on-desktop"></div>
+
+          <div class="label-item">
+            <label for="payment">Upload Payment Screenshot</label>
+            <input
+              type="file"
+              id="payment"
+              name="payment"
+              accept="image/*"
+              required
+              onchange="displayFileName()"
+            />
+            <p id="fileName"></p>
+          </div>
+
+          <button class="register-btn" type="submit">Register</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
