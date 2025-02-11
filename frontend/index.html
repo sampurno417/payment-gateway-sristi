@@ -7,6 +7,7 @@
     <title>Sristi 2025 Tech Fest Registration</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -116,7 +117,7 @@
             loadingAnimation.play();
 
             try {
-        const response = await fetch("http://localhost:4000/payment/create-order", {
+        const response = await fetch("http://localhost:4000/payment/createOrder", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ amount: formData.amount }),
