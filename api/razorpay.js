@@ -10,7 +10,7 @@ const razorpay = new Razorpay({
 });
 
 // Create a Razorpay order
-router.post("/payment/create-order", async (req, res) => {
+router.post("/createOrder", async (req, res) => {
   try {
     const { amount } = req.body;
 
@@ -28,7 +28,7 @@ router.post("/payment/create-order", async (req, res) => {
 });
 
 // Verify the payment
-router.post("/payment/verify-payment", async (req, res) => {
+router.post("/verify-payment", async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, formData } = req.body;
 

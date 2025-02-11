@@ -104,8 +104,8 @@
             formData.amount =
               document.getElementById("event").value === "both" ||
               document.getElementById("college").value !== "jgec"
-                ? 800
-                : 500;
+                ? 1
+                : 1;
 
             formData.collegeName =
               document.getElementById("college").value === "jgec"
@@ -117,7 +117,7 @@
             loadingAnimation.play();
 
             try {
-        const response = await fetch("http://localhost:4000/payment/create-order", {
+        const response = await fetch("http://localhost:4000/payment/createOrder", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ amount: formData.amount }),
@@ -129,7 +129,7 @@
         }
 
         const options = {
-          key: "rzp_test_mEtMCuqx6MkbMi",
+          key: "rzp_live_kw4g3yg2seD3kD",
           amount: paymentData.amount,
           currency: "INR",
           name: "Sristi 2025",
