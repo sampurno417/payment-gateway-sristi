@@ -30,17 +30,30 @@ router.post("/createOrder", async (req, res) => {
 
 // Verify the payment
 router.post("/verify-payment", async (req, res) => {
-  try {
-    const { formData } = req.body;
+  console.log("🔴 /verify-payment route was hit!");
+  console.log("Received verification data:", req.body);
 
-    const razorpay_payment_id=formData.paymentId;
-    const razorpay_order_id=formData.orderId;
-    const razorpay_signature=formData.razorpay_signature;
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    // const razorpay_payment_id=formData.paymentId;
+    // const razorpay_order_id=formData.orderId;
+    // const razorpay_signature=formData.razorpay_signature;
+
+    console.log("🔹 Crypto module test:", typeof crypto.createHmac);
+
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;
-    const expectedSignature = crypto.createHmac("sha256", "Deus7xTJxWserZBOnme3w0La")
+    const expectedSignature = crypto.createHmac("sha256", `${process.env.RAZORPAY_KEY_SECRET}`)
       .update(body)
       .digest("hex");
+
+      console.log("🔹 Generated Signature:", expectedSignature);
+console.log("🔹 Received Signature:", razorpay_signature);
+
+console.log("🔹 Order ID:", razorpay_order_id);
+console.log("🔹 Payment ID:", razorpay_payment_id);
+
 
     if (expectedSignature === razorpay_signature) {
     //   const student = new Student(formData);
