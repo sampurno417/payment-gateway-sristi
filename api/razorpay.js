@@ -31,10 +31,14 @@ router.post("/createOrder", async (req, res) => {
 // Verify the payment
 router.post("/verify-payment", async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, formData } = req.body;
+    const { formData } = req.body;
+
+    const razorpay_payment_id=formData.paymentId;
+    const razorpay_order_id=formData.orderId;
+    const razorpay_signature=formData.razorpay_signature;
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;
-    const expectedSignature = crypto.createHmac("sha256", "Deus7xTJxWserZBOnme3w0La")
+    const expectedSignature = crypto.createHmac("sha256", `${process.env.RAZORPAY_KEY_SECRET}`)
       .update(body)
       .digest("hex");
 
@@ -42,7 +46,7 @@ router.post("/verify-payment", async (req, res) => {
     //   const student = new Student(formData);
     //   await student.save();
 
-      res.json({ success: true, message: "Payment verified and registration successful!" });
+      res.status(200).json({ success: true, message: "Payment verified and registration successful!" });
     } else {
       res.status(400).json({ success: false, message: "Payment verification failed!" });
     }
