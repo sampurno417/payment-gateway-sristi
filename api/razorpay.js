@@ -1,12 +1,13 @@
 const express = require("express");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
+require('dotenv').config();
 
 const router = express.Router();
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_mEtMCuqx6MkbMi",
-  key_secret: "Deus7xTJxWserZBOnme3w0La",
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 // Create a Razorpay order
