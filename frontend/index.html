@@ -14,22 +14,21 @@
         const eventSelect = document.getElementById("event");
         const eventContainer = document.getElementById("event-container");
         const note = document.querySelector(".note");
-        const additional=document.getElementById("additional");
+        const additional = document.getElementById("additional");
         // const payNowContainer = document.getElementById("pay-now-container");
         const collegeSelect = document.getElementById("college");
         const collegeInputContainer = document.getElementById(
           "college-input-container"
         );
-        
 
         collegeSelect.addEventListener("change", function () {
-          
           if (collegeSelect.value === "other") {
             collegeInputContainer.style.display = "block";
             eventContainer.style.display = "none";
             eventSelect.removeAttribute("required");
-            note.textContent = "Participation Fee: ₹800 (Additional Convinience Fee:₹20)";
-            additional.textContent="";
+            note.textContent =
+              "Participation Fee: ₹800 (Additional Convinience Fee:₹20)";
+            additional.textContent = "";
             // payNowContainer.innerHTML =
             //   '<a href="upi://pay?pa=sristijgec@sbi&pn=SRISTIJALPAIGURI%20GOVT%20ENGG%20COLLEGE&mc=8220&tr=&tn=&am=800&cu=INR&url=&mode=02&purpose=00&orgid=180102&sign=MEQCIBpUcu1IGX07X7+IPlV6AYfA43SSwUaV/VV+19w2cIRNAiA0qD2s6BqIza4HZhd9M2SPsSdCp8ShUlbDql6V7SviQQ==" class="pay-now-btn">PAY NOW</a>';
             // qrPayment.innerHTML =
@@ -40,26 +39,24 @@
             eventSelect.setAttribute("required", "required");
             note.textContent =
               "Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800";
-              additional.textContent="Additional Convinience Fee: ₹13(Event 1 or 2) and ₹20(Both) "
-            
+            additional.textContent =
+              "Additional Convinience Fee: ₹13(Event 1 or 2) and ₹20(Both) ";
 
             eventSelect.addEventListener("change", function () {
               if (eventSelect.value === "both") {
                 note.textContent = "Participation Fee: ₹820";
-                additional.textContent="";
-                
-                
+                additional.textContent = "";
               } else if (
                 eventSelect.value === "event1" ||
                 eventSelect.value === "event2"
               ) {
                 note.textContent = "Participation Fee: ₹513";
-                additional.textContent="";
-              
+                additional.textContent = "";
               } else {
                 note.textContent =
                   "Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800";
-                additional.innerHTML = "Additional convinience fee: ₹13 (for Event 1 or 2) & ₹20 (for Both)";
+                additional.innerHTML =
+                  "Additional convinience fee: ₹13 (for Event 1 or 2) & ₹20 (for Both)";
                 // qrPayment.innerHTML = "";
               }
             });
@@ -93,7 +90,6 @@
               phone: parseInt(document.getElementById("phone").value),
               email: document.getElementById("email").value,
               // event: document.getElementById("event").value,
-              
             };
 
             formData.event =
@@ -104,8 +100,8 @@
             formData.amount =
               document.getElementById("event").value === "both" ||
               document.getElementById("college").value !== "jgec"
-                ? 820
-                : 513;
+                ? 1
+                : 1;
 
             formData.collegeName =
               document.getElementById("college").value === "jgec"
@@ -127,24 +123,22 @@
               );
 
               const paymentData = await response.json();
-              formData.orderId=response.razorpay_order_id;
-              formData.paymentId=response.razorpay_payment_id;
-              formData.signature=response.razorpay_signature;
+
               if (!response.ok) {
                 throw new Error("Failed to initiate payment");
               }
 
-                const apiData = await fetch("http://localhost:4000/", {
+              const apiData = await fetch("http://localhost:4000/token", {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
-                });
+              });
 
-                if (!apiData.ok) {
+              if (!apiData.ok) {
                 throw new Error("Failed to fetch API data");
-                }
+              }
 
-                const apiResponse = await apiData.json();
-                
+              const apiResponse = await apiData.json();
+
               const options = {
                 key: apiResponse.api_key,
                 amount: paymentData.amount,
@@ -153,13 +147,15 @@
                 description: "Event Registration Fee",
                 order_id: paymentData.id,
                 handler: async function (response) {
-                  
-
                   const verifyInfo = {
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_signature: response.razorpay_signature,
                   };
+
+                  formData.orderId = verifyInfo.razorpay_order_id;
+                  formData.paymentId = verifyInfo.razorpay_payment_id;
+                  formData.signature = verifyInfo.razorpay_signature;
 
                   const verifyResponse = await fetch(
                     "http://localhost:4000/payment/verify-payment",
@@ -170,53 +166,54 @@
                     }
                   );
 
-            const verifyData = await verifyResponse.json();
-            if (verifyResponse.ok) {
-              console.log("formData that is sending");
-              console.log("formData", formData);
-              const formResponse = await fetch(
-                //"https://sristi-registration-backend.vercel.app/",
-               "http://localhost:4000/",
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(formData),
-                }
-              );
-              const data = await formResponse.json();
-              console.log("data",data);
-              if(formResponse.ok){
-              const mailResponse = await fetch(`http://localhost:4000/sendmail/${formData.email}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: data.id }),
-              });
+                  const verifyData = await verifyResponse.json();
+                  if (verifyResponse.ok) {
+                    console.log("formData that is sending");
+                    console.log("formData", formData);
+                    const formResponse = await fetch(
+                      //"https://sristi-registration-backend.vercel.app/",
+                      "http://localhost:4000/",
+                      {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(formData),
+                      }
+                    );
+                    const data = await formResponse.json();
+                    console.log("data", data);
+                    if (formResponse.ok) {
+                      const mailResponse = await fetch(
+                        `http://localhost:4000/sendmail/${formData.email}`,
+                        {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ id: data.id }),
+                        }
+                      );
 
-              if (mailResponse.ok) {
-                alert("Registration successful!");
-                resetFormFields();
-                window.location.href = "confirmation.html";
-              } else {
-                alert("Failed to send confirmation email.");
-              }
-            }
-            else if(formResponse.status==400){
-            alert("students already exists");
-            }
-          else{
-              alert("student details wrong");
-          }
-            } else {
-              alert("Payment verification failed.");
-            }
-          },
-          prefill: {
-            name: formData.name,
-            email: formData.email,
-            contact: formData.phone,
-          },
-          theme: { color: "#3399cc" },
-        };
+                      if (mailResponse.ok) {
+                        alert("Registration successful!");
+                        resetFormFields();
+                        window.location.href = "confirmation.html";
+                      } else {
+                        alert("Failed to send confirmation email.");
+                      }
+                    } else if (formResponse.status == 400) {
+                      alert("students already exists");
+                    } else {
+                      alert("student details wrong");
+                    }
+                  } else {
+                    alert("Payment verification failed.");
+                  }
+                },
+                prefill: {
+                  name: formData.name,
+                  email: formData.email,
+                  contact: formData.phone,
+                },
+                theme: { color: "#3399cc" },
+              };
 
               const rzp = new Razorpay(options);
               rzp.open();
@@ -234,7 +231,7 @@
           document.getElementById("event-container").style.display = "block";
           document.querySelector(".note").textContent =
             "Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800. Additional convinience fee: ₹13 (for Event 1 or 2) & ₹20 (for Both)";
-          
+
           document.getElementById("fileName").textContent = "";
           setTimeout(function () {
             window.location.href = "confirmation.html";
@@ -403,8 +400,9 @@
           <p class="note">
             Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800
           </p>
-          <p id="additional" class="note">Additional Convinience Fee: ₹13(Event 1 or 2) and ₹20(Both)</p>
-          
+          <p id="additional" class="note">
+            Additional Convinience Fee: ₹13(Event 1 or 2) and ₹20(Both)
+          </p>
 
           <!-- <div class="label-item">
             <label for="payment">Upload Payment Screenshot</label>

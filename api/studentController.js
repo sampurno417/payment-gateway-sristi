@@ -66,7 +66,7 @@ const getENV=async(req,res)=>{
 
 // Define the POST route
 router.route("/").post(registerStudent);
-router.route("/").get(getENV);
+router.route("/token").get(getENV);
 router.route("/sendmail/:id").post(sendMail);
 
 module.exports = router;
