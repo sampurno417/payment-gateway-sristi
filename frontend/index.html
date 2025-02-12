@@ -152,6 +152,15 @@
 
             const verifyData = await verifyResponse.json();
             if (verifyResponse.ok) {
+              const response = await fetch(
+                //"https://sristi-registration-backend.vercel.app/",
+               "http://localhost:4000",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(formData),
+                }
+              );
               const mailResponse = await fetch(`http://localhost:4000/sendmail/${formData.email}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

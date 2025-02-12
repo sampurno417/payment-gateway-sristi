@@ -9,10 +9,21 @@ const port = 4000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: [
-    'https://sristi-registration-frontend.vercel.app',
-    'http://127.0.0.1:5500'
-  ],
+  origin: (origin, callback) => {
+    console.log("Request Origin:", origin);
+    const allowedOrigins = [
+      'https://sristi-registration-frontend.vercel.app', // Frontend's origin
+      'https://sristi-registration-frontend.vercel.app/', // Frontend's origin
+      'http://127.0.0.1:5500', // For local testing
+      'http://127.0.0.1:5500/frontend/index.html',
+      'http://localhost:4000/'
+    ];
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
