@@ -30,11 +30,12 @@ const registerStudent = async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       event: req.body.event,
-      payment: req.body.payment,
       amount: req.body.amount,
       college: req.body.college,
       collegeName: req.body.collegeName,
-      isVerified: req.body.isVerified,
+      orderId:req.body.orderId,
+      paymentId:req.body.paymentId,
+      signature:req.body.signature,
     });
 
         // Save the data and send a success response
