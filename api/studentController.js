@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const student = require("./students.models.js");
 const sendMail = require("./confirmationMail.js");
+require('dotenv').config();
 
 // const generateStudentId = () => {
 //   const timestamp = Date.now();
@@ -50,8 +51,21 @@ const registerStudent = async (req, res) => {
     }
 };
 
+const getENV=async(req,res)=>{
+ try{
+  const envfiles={
+    api_key: process.env.RAZORPAY_KEY_ID
+  }
+  return res.status(200).json(envfiles);
+ }
+ catch(error){
+  res.status(500).json("error",error);
+ }
+}
+
 // Define the POST route
 router.route("/").post(registerStudent);
+router.route("/").get(getENV);
 router.route("/sendmail/:id").post(sendMail);
 
 module.exports = router;

@@ -27,10 +27,10 @@
             eventContainer.style.display = "none";
             eventSelect.removeAttribute("required");
             note.textContent = "Participation Fee: ₹800";
-            payNowContainer.innerHTML =
-              '<a href="upi://pay?pa=sristijgec@sbi&pn=SRISTIJALPAIGURI%20GOVT%20ENGG%20COLLEGE&mc=8220&tr=&tn=&am=800&cu=INR&url=&mode=02&purpose=00&orgid=180102&sign=MEQCIBpUcu1IGX07X7+IPlV6AYfA43SSwUaV/VV+19w2cIRNAiA0qD2s6BqIza4HZhd9M2SPsSdCp8ShUlbDql6V7SviQQ==" class="pay-now-btn">PAY NOW</a>';
-            qrPayment.innerHTML =
-              '<img src="./assets/pay-800-sristi.svg" class="qr-img"/>';
+            // payNowContainer.innerHTML =
+            //   '<a href="upi://pay?pa=sristijgec@sbi&pn=SRISTIJALPAIGURI%20GOVT%20ENGG%20COLLEGE&mc=8220&tr=&tn=&am=800&cu=INR&url=&mode=02&purpose=00&orgid=180102&sign=MEQCIBpUcu1IGX07X7+IPlV6AYfA43SSwUaV/VV+19w2cIRNAiA0qD2s6BqIza4HZhd9M2SPsSdCp8ShUlbDql6V7SviQQ==" class="pay-now-btn">PAY NOW</a>';
+            // qrPayment.innerHTML =
+            //   '<img src="./assets/pay-800-sristi.svg" class="qr-img"/>';
           } else {
             collegeInputContainer.style.display = "none";
             eventContainer.style.display = "block";
@@ -43,19 +43,13 @@
             eventSelect.addEventListener("change", function () {
               if (eventSelect.value === "both") {
                 note.textContent = "Participation Fee: ₹800";
-                payNowContainer.innerHTML =
-                  '<a href="upi://pay?pa=sristijgec@sbi&pn=SRISTIJALPAIGURI%20GOVT%20ENGG%20COLLEGE&mc=8220&tr=&tn=&am=800&cu=INR&url=&mode=02&purpose=00&orgid=180102&sign=MEQCIBpUcu1IGX07X7+IPlV6AYfA43SSwUaV/VV+19w2cIRNAiA0qD2s6BqIza4HZhd9M2SPsSdCp8ShUlbDql6V7SviQQ==" class="pay-now-btn">PAY NOW</a>';
-                qrPayment.innerHTML =
-                  '<img src="./assets/pay-800-sristi.svg" class="qr-img"/>';
+                
               } else if (
                 eventSelect.value === "event1" ||
                 eventSelect.value === "event2"
               ) {
                 note.textContent = "Participation Fee: ₹500";
-                payNowContainer.innerHTML =
-                  '<a href="upi://pay?pa=sristijgec@sbi&pn=SRISTIJALPAIGURI%20GOVT%20ENGG%20COLLEGE&mc=8220&tr=&tn=&am=500&cu=INR&url=&mode=02&purpose=00&orgid=180102&sign=MEQCIBpUcu1IGX07X7+IPlV6AYfA43SSwUaV/VV+19w2cIRNAiA0qD2s6BqIza4HZhd9M2SPsSdCp8ShUlbDql6V7SviQQ==" class="pay-now-btn">PAY NOW</a>';
-                qrPayment.innerHTML =
-                  '<img src="./assets/pay-500-sristi.svg" class="qr-img"/>';
+              
               } else {
                 note.textContent =
                   "Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800";
@@ -93,7 +87,7 @@
               phone: parseInt(document.getElementById("phone").value),
               email: document.getElementById("email").value,
               // event: document.getElementById("event").value,
-              isVerified: false,
+              
             };
 
             formData.event =
@@ -117,71 +111,112 @@
             loadingAnimation.play();
 
             try {
-        const response = await fetch("http://localhost:4000/payment/createOrder", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: formData.amount }),
-        });
+              const response = await fetch(
+                "http://localhost:4000/payment/createOrder",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ amount: formData.amount }),
+                }
+              );
 
-        const paymentData = await response.json();
-        if (!response.ok) {
-          throw new Error("Failed to initiate payment");
-        }
-
-        const options = {
-          key: "rzp_live_kw4g3yg2seD3kD",
-          amount: paymentData.amount,
-          currency: "INR",
-          name: "Sristi 2025",
-          description: "Event Registration Fee",
-          order_id: paymentData.id,
-          handler: async function (response) {
-            console.log(response);
-            formData.paymentId = response.razorpay_payment_id;
-            formData.orderId = response.razorpay_order_id
-            formData.signature = response.razorpay_signature;
-
-            const verifyResponse = await fetch("http://localhost:4000/payment/verify-payment", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(formData),
-            });
-
-            const verifyData = await verifyResponse.json();
-            if (verifyResponse.ok) {
-              const mailResponse = await fetch(`http://localhost:4000/sendmail/${formData.email}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: verifyData.id }),
-              });
-
-              if (mailResponse.ok) {
-                alert("Registration successful!");
-                resetFormFields();
-                window.location.href = "confirmation.html";
-              } else {
-                alert("Failed to send confirmation email.");
+              const paymentData = await response.json();
+              if (!response.ok) {
+                throw new Error("Failed to initiate payment");
               }
-            } else {
-              alert("Payment verification failed.");
+
+                const apiData = await fetch("http://localhost:4000/", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+                });
+
+                if (!apiData.ok) {
+                throw new Error("Failed to fetch API data");
+                }
+
+                const apiResponse = await apiData.json();
+                console.log("API Data:", apiResponse);
+
+              const options = {
+                key: apiResponse.api_key,
+                amount: paymentData.amount,
+                currency: "INR",
+                name: "Sristi 2025",
+                description: "Event Registration Fee",
+                order_id: paymentData.id,
+                handler: async function (response) {
+                  console.log(response);
+
+                  const verifyInfo = {
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                  };
+
+                  const verifyResponse = await fetch(
+                    "http://localhost:4000/payment/verify-payment",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(verifyInfo),
+                    }
+                  );
+
+                  const verifyData = await verifyResponse.json();
+                  if (verifyResponse.ok) {
+                    const response = await fetch(
+                      //"https://sristi-registration-backend.vercel.app/",
+                      "http://localhost:4000",
+                      {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(formData),
+                      }
+                    );
+
+                    if (response.ok) {
+                      const mailResponse = await fetch(
+                        `http://localhost:4000/sendmail/${formData.email}`,
+                        {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ id: formData._id }),
+                        }
+                      );
+
+                      if (mailResponse.ok) {
+                        alert("Registration successful!");
+                        resetFormFields();
+                        window.location.href = "confirmation.html";
+                      } else {
+                        alert("Failed to send confirmation email.");
+                      }
+                    }
+                    else if(response.status==400){
+                      alert("Student already exists")
+                    }
+                    else{
+                      alert("Student Details are wrong");
+                    }
+                  } else {
+                    alert("Payment verification failed.");
+                  }
+                },
+                prefill: {
+                  name: formData.name,
+                  email: formData.email,
+                  contact: formData.phone,
+                },
+                theme: { color: "#3399cc" },
+              };
+
+              const rzp = new Razorpay(options);
+              rzp.open();
+            } catch (error) {
+              console.error("Error:", error);
+              alert("An error occurred. Please try again.");
             }
-          },
-          prefill: {
-            name: formData.name,
-            email: formData.email,
-            contact: formData.phone,
-          },
-          theme: { color: "#3399cc" },
-        };
-
-        const rzp = new Razorpay(options);
-        rzp.open();
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred. Please try again.");
-      }
-      });
-
+          });
 
         function resetFormFields() {
           window.location.href = "confirmation.html";
@@ -193,32 +228,32 @@
             "Participation Fee: Event 1 or 2 - ₹500, Both (1+2) - ₹800";
           document.getElementById("pay-now-container").innerHTML = "";
           document.getElementById("fileName").textContent = "";
-          setTimeout(function() {
-        window.location.href = "confirmation.html";
-    }, 1000);
+          setTimeout(function () {
+            window.location.href = "confirmation.html";
+          }, 1000);
         }
 
-      //   async function uploadToCloudinary(file) {
-      //     const formData = new FormData();
-      //     formData.append("file", file);
-      //     formData.append("upload_preset", "payment_proof");
-      //     formData.append("cloud_name", "ddtatnwwv");
+        //   async function uploadToCloudinary(file) {
+        //     const formData = new FormData();
+        //     formData.append("file", file);
+        //     formData.append("upload_preset", "payment_proof");
+        //     formData.append("cloud_name", "ddtatnwwv");
 
-      //     const response = await fetch(
-      //       "https://api.cloudinary.com/v1_1/ddtatnwwv/image/upload",
-      //       {
-      //         method: "POST",
-      //         body: formData,
-      //       }
-      //     );
-      //     if (response.status == 400){
-      //       alert("Faild to upload image");
-      //       throw new Error("Failed to upload image");
-      //     }
+        //     const response = await fetch(
+        //       "https://api.cloudinary.com/v1_1/ddtatnwwv/image/upload",
+        //       {
+        //         method: "POST",
+        //         body: formData,
+        //       }
+        //     );
+        //     if (response.status == 400){
+        //       alert("Faild to upload image");
+        //       throw new Error("Failed to upload image");
+        //     }
 
-      //     return await response.json();
-      //   }
-       });
+        //     return await response.json();
+        //   }
+      });
     </script>
 
     <style>

@@ -52,16 +52,7 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    isPaid: {
-      type: Boolean,
-      default: false,
-      required: true,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-      required: true,
-    },
+   
   },
   { timestamps: true }
 );
