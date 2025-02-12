@@ -29,7 +29,11 @@ const corsOptions = {
   credentials: true,
 };
 
+// Apply CORS middleware
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Explicitly handle preflight requests
+
+
 app.use(express.json());
 
 dbConnect();

@@ -152,15 +152,18 @@
 
             const verifyData = await verifyResponse.json();
             if (verifyResponse.ok) {
-              const response = await fetch(
+              console.log("formData that is sending");
+              console.log("formData", formData);
+              const formResponse = await fetch(
                 //"https://sristi-registration-backend.vercel.app/",
-               "http://localhost:4000",
+               "http://localhost:4000/",
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify(formData),
                 }
               );
+              if(formResponse.ok){
               const mailResponse = await fetch(`http://localhost:4000/sendmail/${formData.email}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -174,6 +177,13 @@
               } else {
                 alert("Failed to send confirmation email.");
               }
+            }
+            else if(formResponse.status==400){
+            alert("students already exists");
+            }
+          else{
+              alert("student details wrong");
+          }
             } else {
               alert("Payment verification failed.");
             }
