@@ -11,7 +11,8 @@ const port = 4000;
 const corsOptions = {
   origin: [
     'https://sristi-registration-frontend.vercel.app',
-    'http://127.0.0.1:5500'
+    'http://127.0.0.1:5500',
+    'http://192.168.152.132:56775/'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
