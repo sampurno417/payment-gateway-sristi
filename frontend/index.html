@@ -163,11 +163,13 @@
                   body: JSON.stringify(formData),
                 }
               );
+              const data = await formResponse.json();
+              console.log("data",data);
               if(formResponse.ok){
               const mailResponse = await fetch(`http://localhost:4000/sendmail/${formData.email}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: verifyData.id }),
+                body: JSON.stringify({ id: data.id }),
               });
 
               if (mailResponse.ok) {
